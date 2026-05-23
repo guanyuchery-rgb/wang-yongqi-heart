@@ -1,0 +1,236 @@
+:root {
+  --bg: #fff7fb;
+  --ink: #4b2536;
+  --muted: #7c5264;
+  --pink: #ff6fa8;
+  --rose: #ff3f7f;
+  --peach: #ffb199;
+  --mint: #b7f2dc;
+  --card: rgba(255, 255, 255, 0.78);
+  --shadow: 0 24px 70px rgba(255, 82, 137, 0.22);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: "Noto Sans SC", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(183, 242, 220, 0.7), transparent 25%),
+    radial-gradient(circle at 82% 16%, rgba(255, 177, 153, 0.68), transparent 28%),
+    linear-gradient(135deg, #fff7fb 0%, #ffe8f1 48%, #fff2df 100%);
+  overflow-x: hidden;
+}
+
+.page-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.hero {
+  position: relative;
+  width: min(760px, 100%);
+  min-height: min(780px, calc(100vh - 48px));
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 16px;
+  padding: clamp(32px, 8vw, 72px) clamp(20px, 6vw, 58px);
+  text-align: center;
+  border: 1px solid rgba(255, 111, 168, 0.22);
+  border-radius: 28px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(18px);
+  overflow: hidden;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 18px;
+  border: 2px dashed rgba(255, 111, 168, 0.28);
+  border-radius: 22px;
+  pointer-events: none;
+}
+
+.hero-visual {
+  position: relative;
+  z-index: 1;
+  width: min(280px, 64vw);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  animation: pulse 2.4s ease-in-out infinite;
+}
+
+.hero-visual img {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 20px 34px rgba(255, 63, 127, 0.3));
+}
+
+.eyebrow,
+h1,
+.message,
+.heart-button,
+.counter {
+  position: relative;
+  z-index: 1;
+}
+
+.eyebrow {
+  margin: 4px 0 0;
+  color: var(--rose);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin: 0;
+  font-family: "Ma Shan Zheng", "Noto Sans SC", cursive;
+  font-size: clamp(4.2rem, 17vw, 8.8rem);
+  font-weight: 400;
+  line-height: 0.95;
+  color: #f73578;
+  text-shadow: 0 8px 24px rgba(255, 63, 127, 0.18);
+}
+
+.message {
+  width: min(560px, 100%);
+  margin: 0;
+  color: var(--muted);
+  font-size: clamp(1.05rem, 3.6vw, 1.45rem);
+  line-height: 1.75;
+}
+
+.heart-button {
+  width: min(280px, 100%);
+  min-height: 54px;
+  margin-top: 6px;
+  border: 0;
+  border-radius: 999px;
+  color: white;
+  font: inherit;
+  font-size: 1.05rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--rose), var(--pink));
+  box-shadow: 0 14px 26px rgba(255, 63, 127, 0.28);
+  cursor: pointer;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.heart-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 34px rgba(255, 63, 127, 0.35);
+}
+
+.heart-button:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.counter {
+  min-height: 28px;
+  margin: 0;
+  color: #8b4964;
+  font-size: 0.98rem;
+}
+
+.floating-hearts {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.floating-hearts span {
+  position: absolute;
+  left: var(--x);
+  bottom: -40px;
+  color: rgba(255, 63, 127, 0.48);
+  font-size: calc(24px * var(--s));
+  animation: floatUp 7s linear infinite;
+  animation-delay: var(--d);
+}
+
+.pop-heart {
+  position: fixed;
+  left: var(--left);
+  top: var(--top);
+  z-index: 5;
+  color: #ff3f7f;
+  font-size: 28px;
+  pointer-events: none;
+  animation: pop 880ms ease-out forwards;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1) rotate(-2deg);
+  }
+  50% {
+    transform: scale(1.045) rotate(2deg);
+  }
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-112vh) rotate(28deg);
+    opacity: 0;
+  }
+}
+
+@keyframes pop {
+  0% {
+    transform: translate(-50%, -20%) scale(0.6);
+    opacity: 0;
+  }
+  18% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -170%) scale(1.7);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 520px) {
+  .page-shell {
+    padding: 14px;
+  }
+
+  .hero {
+    min-height: calc(100vh - 28px);
+    border-radius: 22px;
+  }
+
+  .hero::before {
+    inset: 12px;
+    border-radius: 18px;
+  }
+
+  .heart-button {
+    min-height: 50px;
+  }
+}
