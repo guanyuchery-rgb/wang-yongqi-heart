@@ -2,6 +2,7 @@ const button = document.querySelector("#heartButton");
 const counter = document.querySelector("#counter");
 const message = document.querySelector("#message");
 const surprise = document.querySelector("#surprise");
+const siteStats = document.querySelector("#siteStats");
 const visitorCount = document.querySelector("#visitorCount");
 const completeCount = document.querySelector("#completeCount");
 
@@ -11,6 +12,21 @@ const COMPLETE_KEY = "wang_yongqi_heart_99_complete_v1";
 
 let count = Number(localStorage.getItem("heartCount") || 0);
 let surpriseShown = localStorage.getItem("surpriseShown") === "true";
+
+function canShowPrivateStats() {
+  return (
+    window.location.protocol === "file:" ||
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1" ||
+    localStorage.getItem("showPrivateStats") === "true"
+  );
+}
+
+function showPrivateStatsIfAllowed() {
+  if (canShowPrivateStats()) {
+    siteStats.hidden = false;
+  }
+}
 
 function updateCounter() {
   counter.textContent = `已经送出 ${count} 颗小爱心`;
@@ -41,6 +57,10 @@ function updateMessage() {
 }
 
 function renderStat(element, value) {
+  if (!canShowPrivateStats()) {
+    return;
+  }
+
   element.textContent = Number.isFinite(value) ? String(value) : "--";
 }
 
@@ -169,6 +189,7 @@ button.addEventListener("click", (event) => {
 
 updateCounter();
 updateMessage();
+showPrivateStatsIfAllowed();
 updateGlobalStats();
 countVisitOnce();
 
