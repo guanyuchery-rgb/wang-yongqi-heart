@@ -2,6 +2,12 @@ const button = document.querySelector("#heartButton");
 const counter = document.querySelector("#counter");
 const message = document.querySelector("#message");
 const surprise = document.querySelector("#surprise");
+const visitorCount = document.querySelector("#visitorCount");
+const completeCount = document.querySelector("#completeCount");
+
+const COUNT_API_BASE = "https://countapi.mileshilliard.com/api/v1";
+const VISITOR_KEY = "wang_yongqi_heart_visitors_v1";
+const COMPLETE_KEY = "wang_yongqi_heart_99_complete_v1";
 
 let count = Number(localStorage.getItem("heartCount") || 0);
 let surpriseShown = localStorage.getItem("surpriseShown") === "true";
@@ -32,6 +38,81 @@ function getMessage() {
 
 function updateMessage() {
   message.textContent = getMessage();
+}
+
+function renderStat(element, value) {
+  element.textContent = Number.isFinite(value) ? String(value) : "--";
+}
+
+async function getGlobalCount(key) {
+  const response = await fetch(`${COUNT_API_BASE}/get/${key}`);
+
+  if (response.status === 404) {
+    return 0;
+  }
+
+  if (!response.ok) {
+    throw new Error(`Count read failed: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return Number(data.value || 0);
+}
+
+async function hitGlobalCount(key) {
+  const response = await fetch(`${COUNT_API_BASE}/hit/${key}`);
+
+  if (!response.ok) {
+    throw new Error(`Count update failed: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return Number(data.value || 0);
+}
+
+async function updateGlobalStats() {
+  try {
+    const [visitors, completed] = await Promise.all([
+      getGlobalCount(VISITOR_KEY),
+      getGlobalCount(COMPLETE_KEY),
+    ]);
+
+    renderStat(visitorCount, visitors);
+    renderStat(completeCount, completed);
+  } catch {
+    renderStat(visitorCount, NaN);
+    renderStat(completeCount, NaN);
+  }
+}
+
+async function countVisitOnce() {
+  try {
+    if (localStorage.getItem("visitCounted") === "true") {
+      renderStat(visitorCount, await getGlobalCount(VISITOR_KEY));
+      return;
+    }
+
+    const visitors = await hitGlobalCount(VISITOR_KEY);
+    localStorage.setItem("visitCounted", "true");
+    renderStat(visitorCount, visitors);
+  } catch {
+    renderStat(visitorCount, NaN);
+  }
+}
+
+async function countCompletionOnce() {
+  try {
+    if (localStorage.getItem("completionCounted") === "true") {
+      renderStat(completeCount, await getGlobalCount(COMPLETE_KEY));
+      return;
+    }
+
+    const completed = await hitGlobalCount(COMPLETE_KEY);
+    localStorage.setItem("completionCounted", "true");
+    renderStat(completeCount, completed);
+  } catch {
+    renderStat(completeCount, NaN);
+  }
 }
 
 function popHeart(x, y) {
@@ -71,6 +152,7 @@ function showSurprise() {
   surprise.setAttribute("aria-hidden", "false");
   surprise.classList.add("is-visible");
   burstHearts();
+  countCompletionOnce();
 }
 
 button.addEventListener("click", (event) => {
@@ -87,8 +169,11 @@ button.addEventListener("click", (event) => {
 
 updateCounter();
 updateMessage();
+updateGlobalStats();
+countVisitOnce();
 
 if (count >= 99 && surpriseShown) {
   surprise.setAttribute("aria-hidden", "false");
   surprise.classList.add("is-visible");
+  countCompletionOnce();
 }
