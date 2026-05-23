@@ -11,7 +11,9 @@
       <feDropShadow dx="0" dy="16" stdDeviation="14" flood-color="#e52d69" flood-opacity="0.28"/>
     </filter>
   </defs>
-  <rect width="320" height="320" rx="64" fill="#fff1f8"/>
+  <rect width="320" height="320" rx="64" fill="#0b0d18" opacity="0.28"/>
+  <circle cx="160" cy="160" r="134" fill="#ff2f7d" opacity="0.08"/>
+  <circle cx="160" cy="160" r="104" fill="#5bf2d1" opacity="0.06"/>
   <g filter="url(#softShadow)">
     <path
       d="M160 263C87 207 54 169 54 117c0-35 25-61 58-61 21 0 39 10 48 27 9-17 27-27 48-27 33 0 58 26 58 61 0 52-33 90-106 146Z"
