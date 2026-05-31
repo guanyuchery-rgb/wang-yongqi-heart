@@ -2,6 +2,7 @@ const button = document.querySelector("#heartButton");
 const counter = document.querySelector("#counter");
 const message = document.querySelector("#message");
 const surprise = document.querySelector("#surprise");
+const surpriseHint = document.querySelector("#surpriseHint");
 const siteStats = document.querySelector("#siteStats");
 const visitorCount = document.querySelector("#visitorCount");
 const completeCount = document.querySelector("#completeCount");
@@ -14,6 +15,7 @@ const LOVE_KEY = "wang_yongqi_heart_999_love_v1";
 let count = Number(localStorage.getItem("heartCount") || 0);
 let surpriseShown = localStorage.getItem("surpriseShown") === "true";
 let loveShown = localStorage.getItem("loveShown") === "true";
+let allowContinueAfter99 = false;
 
 function canShowPrivateStats() {
   return (
@@ -27,6 +29,22 @@ function canShowPrivateStats() {
 function showPrivateStatsIfAllowed() {
   if (canShowPrivateStats()) {
     siteStats.hidden = false;
+  }
+}
+
+async function loadRemoteConfig() {
+  try {
+    const response = await fetch(`remote-config.json?v=${Date.now()}`, { cache: "no-store" });
+
+    if (!response.ok) {
+      return;
+    }
+
+    const config = await response.json();
+    allowContinueAfter99 = config.allowContinueAfter99 === true;
+    updateSurpriseHint();
+  } catch {
+    // Keep the page usable even if GitHub Pages or the network is slow.
   }
 }
 
@@ -189,11 +207,31 @@ function setSurpriseText(kicker, text, isMega = false) {
   surprise.querySelector(".surprise-kicker").textContent = kicker;
   surprise.querySelector(".surprise-text").textContent = text;
   surprise.classList.toggle("is-mega", isMega);
+  updateSurpriseHint();
 }
 
 function revealSurprise() {
   surprise.setAttribute("aria-hidden", "false");
   surprise.classList.add("is-visible");
+}
+
+function hideSurprise() {
+  if (count >= 99 && count < 999 && !allowContinueAfter99) {
+    updateSurpriseHint();
+    return;
+  }
+
+  surprise.classList.remove("is-visible");
+  surprise.setAttribute("aria-hidden", "true");
+}
+
+function updateSurpriseHint() {
+  if (count >= 999) {
+    surpriseHint.textContent = "点一下继续";
+    return;
+  }
+
+  surpriseHint.textContent = allowContinueAfter99 ? "小禹已开启，点一下继续" : "等待小禹开启继续";
 }
 
 function showSurprise() {
@@ -231,18 +269,20 @@ button.addEventListener("click", (event) => {
   }
 });
 
+surprise.addEventListener("click", hideSurprise);
+
 updateCounter();
 updateMessage();
 showPrivateStatsIfAllowed();
 updateGlobalStats();
 countVisitOnce();
+loadRemoteConfig();
+window.setInterval(loadRemoteConfig, 5000);
 
 if (count >= 999 && loveShown) {
   setSurpriseText("第 999 颗爱心达成", "我爱你", true);
-  revealSurprise();
   countLoveOnce();
 } else if (count >= 99 && surpriseShown) {
   setSurpriseText("第 99 颗爱心达成", "小禹一直陪着你");
-  revealSurprise();
   countCompletionOnce();
 }
