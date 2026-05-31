@@ -81,11 +81,22 @@ function getMessage() {
     return "嘻嘻，加油加油";
   }
 
-  if (count < 999) {
+  if (count < 521) {
     return "小禹一直陪着你";
   }
 
   return "我爱你";
+}
+
+function updateButtonState() {
+  if (count >= 521) {
+    button.disabled = true;
+    button.textContent = "已经到 521 啦";
+    return;
+  }
+
+  button.disabled = false;
+  button.textContent = "点一下收下爱心";
 }
 
 function updateMessage() {
@@ -228,7 +239,11 @@ function revealSurprise() {
 }
 
 function hideSurprise() {
-  if (count >= 99 && count < 999 && !allowContinueAfter99) {
+  if (count >= 521) {
+    return;
+  }
+
+  if (count >= 99 && count < 521 && !allowContinueAfter99) {
     updateSurpriseHint();
     return;
   }
@@ -238,8 +253,8 @@ function hideSurprise() {
 }
 
 function updateSurpriseHint() {
-  if (count >= 999) {
-    surpriseHint.textContent = "点一下继续";
+  if (count >= 521) {
+    surpriseHint.textContent = "停在 521，刚刚好";
     return;
   }
 
@@ -258,20 +273,25 @@ function showSurprise() {
 function showLoveSurprise() {
   loveShown = true;
   localStorage.setItem("loveShown", "true");
-  setSurpriseText("第 999 颗爱心达成", "我爱你", true);
+  setSurpriseText("第 521 颗爱心达成", "我爱你", true);
   revealSurprise();
   burstHearts(72);
   countLoveOnce();
 }
 
 button.addEventListener("click", (event) => {
+  if (count >= 521) {
+    return;
+  }
+
   count += 1;
   localStorage.setItem("heartCount", String(count));
   updateCounter();
   updateMessage();
+  updateButtonState();
   popHeart(event.clientX, event.clientY);
 
-  if (count >= 999 && !loveShown) {
+  if (count >= 521 && !loveShown) {
     showLoveSurprise();
     return;
   }
@@ -285,6 +305,7 @@ surprise.addEventListener("click", hideSurprise);
 
 updateCounter();
 updateMessage();
+updateButtonState();
 applyAdminQuery();
 showPrivateStatsIfAllowed();
 updateGlobalStats();
@@ -292,8 +313,9 @@ countVisitOnce();
 loadRemoteConfig();
 window.setInterval(loadRemoteConfig, 5000);
 
-if (count >= 999 && loveShown) {
-  setSurpriseText("第 999 颗爱心达成", "我爱你", true);
+if (count >= 521 && loveShown) {
+  setSurpriseText("第 521 颗爱心达成", "我爱你", true);
+  updateButtonState();
   countLoveOnce();
 } else if (count >= 99 && surpriseShown) {
   setSurpriseText("第 99 颗爱心达成", "小禹一直陪着你");
