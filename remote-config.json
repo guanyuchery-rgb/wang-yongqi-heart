@@ -1,3 +1,4 @@
 {
-  "allowContinueAfter99": false
+  "allowContinueAfter99": false,
+  "globalLocked": true
 }
