@@ -17,6 +17,18 @@ let surpriseShown = localStorage.getItem("surpriseShown") === "true";
 let loveShown = localStorage.getItem("loveShown") === "true";
 let allowContinueAfter99 = false;
 
+function applyAdminQuery() {
+  const params = new URLSearchParams(window.location.search);
+
+  if (params.get("admin") === "xiaoyu") {
+    localStorage.setItem("showPrivateStats", "true");
+  }
+
+  if (params.get("admin") === "off") {
+    localStorage.removeItem("showPrivateStats");
+  }
+}
+
 function canShowPrivateStats() {
   return (
     window.location.protocol === "file:" ||
@@ -273,6 +285,7 @@ surprise.addEventListener("click", hideSurprise);
 
 updateCounter();
 updateMessage();
+applyAdminQuery();
 showPrivateStatsIfAllowed();
 updateGlobalStats();
 countVisitOnce();
