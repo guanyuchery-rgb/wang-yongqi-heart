@@ -85,7 +85,7 @@ function getMessage() {
     return "小禹一直陪着你";
   }
 
-  return "我爱你";
+  return "停在 521，刚刚好";
 }
 
 function updateButtonState() {
@@ -273,7 +273,7 @@ function showSurprise() {
 function showLoveSurprise() {
   loveShown = true;
   localStorage.setItem("loveShown", "true");
-  setSurpriseText("第 521 颗爱心达成", "我爱你", true);
+  setSurpriseText("第 521 颗爱心达成", "停在 521，刚刚好", true);
   revealSurprise();
   burstHearts(72);
   countLoveOnce();
@@ -314,7 +314,7 @@ loadRemoteConfig();
 window.setInterval(loadRemoteConfig, 5000);
 
 if (count >= 521 && loveShown) {
-  setSurpriseText("第 521 颗爱心达成", "我爱你", true);
+  setSurpriseText("第 521 颗爱心达成", "停在 521，刚刚好", true);
   updateButtonState();
   countLoveOnce();
 } else if (count >= 99 && surpriseShown) {
