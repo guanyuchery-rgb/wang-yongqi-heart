@@ -324,6 +324,12 @@ h1 {
     0 0 40px rgba(91, 242, 209, 0.22);
 }
 
+.surprise-hint {
+  margin: 16px 0 0;
+  color: rgba(255, 248, 253, 0.58);
+  font-size: 0.9rem;
+}
+
 .surprise.is-mega .surprise-card {
   border-color: rgba(255, 179, 107, 0.34);
   box-shadow:
